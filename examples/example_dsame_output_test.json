@@ -1,0 +1,32 @@
+{
+  "ORG": "WXR",
+  "EEE": "RWT",
+  "TTTT": "0030",
+  "JJJHHMM": "3650000",
+  "STATION": "KEAX",
+  "TYPE": "NWS",
+  "LLLLLLLL": "KEAX/NWS",
+  "COUNTRY": "US",
+  "LANG": "EN",
+  "event": "Required Weekly Test",
+  "type": "T",
+  "end": "07:30 PM",
+  "start": "07:00 PM",
+  "organization": "National Weather Service",
+  "PSSCCC": "020103-020209-020091-020121-029047-029165-029095-029037",
+  "PSSCCC_list": [
+    "020091",
+    "020103",
+    "020121",
+    "020209",
+    "029037",
+    "029047",
+    "029095",
+    "029165"
+  ],
+  "location": "PLEASANT HILL, MISSOURI",
+  "date": "Wed May 29 02:04:52 2024",
+  "length": "30 minutes",
+  "seconds": 1800,
+  "MESSAGE": "The National Weather Service in PLEASANT HILL, MISSOURI has issued a Required Weekly Test valid until 07:30 PM for the following counties in Kansas: Johnson, Leavenworth, Miami, Wyandotte, and for the following counties in Missouri: Cass, Clay, Jackson, Platte. (KEAX/NWS)"
+}

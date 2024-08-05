@@ -1,0 +1,4 @@
+#!/bin/bash
+mv /eas-notifier/scripts/dsame3 /eas-notifier/dsame3
+#No longer needed, since using a modified version of dsame3
+#pip install --break-system-packages -r /eas-notifier/dsame3/requirements.txt

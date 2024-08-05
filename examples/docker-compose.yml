@@ -1,0 +1,16 @@
+services:
+  eas-notifier:
+    container_name: eas-notifier
+    build: ./eas-notifier
+    environment:
+      SAME: "011568 026863 041583 051764 010941" #Required; list of SAME codes to monitor
+      WEBHOOK_URL: "https://your-webhook-url/here" #Required; POST URL for webhook
+      WEBHOOK_AUTHORIZATION: "Bearer your-token-here" #Optional; authorization token for webhook
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=false' #Disables watchtower checking for updates
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro' #Allows alert times to use the proper timezone
+    ports:
+    - "4898:4898/udp"
+    restart: unless-stopped
+

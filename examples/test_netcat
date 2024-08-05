@@ -1,0 +1,4 @@
+#!/bin/bash
+# Script to use one of the provided test files to test multimon-ng and dsame3
+# Change the IP and port of the 'nc' command to match where the server is listening
+sox examples/sample\ alert/WXR-RWT.ogg -esigned-integer -b16 -r 22050 -t raw - | nc -u 127.0.0.1 4898

@@ -1,0 +1,9 @@
+#!/bin/bash
+#The version of multimon-ng that is installed using pacman has a PulseAudio requirement
+#Since Pulse is not installed in the container, the built version will not need it
+git clone https://github.com/EliasOenal/multimon-ng
+mkdir multimon-ng/build
+cd multimon-ng/build
+cmake ..
+make
+make install

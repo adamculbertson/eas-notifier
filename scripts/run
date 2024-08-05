@@ -1,0 +1,32 @@
+#!/bin/bash
+#IMPORTANT: This script MUST be called via stdbuf -i0 -o0 -e0 bash /path/to/script/here
+#This disables buffering with pipes, so it allows multimon-ng to function properly
+
+#Since the port is optional, check if it has been set, and if not, set it to the default of 4898
+if [ -z "$PORT" ]; then
+  PORT="4898"
+fi
+
+#Check for required environment variables
+if [ -z "$SAME" ]; then
+  echo "No SAME codes specified" >&2
+  exit 2
+fi
+
+if [ -z "$WEBHOOK_URL" ]; then
+  echo "No webhook url specified" >&2
+  exit 2
+fi
+
+#Allow the Python script to access the variables
+export SAME="$SAME"
+export WEBHOOK_URL="$WEBHOOK_URL"
+export WEBHOOK_AUTHORIZATION="$WEBHOOK_AUTHORIZATION"
+
+#Take the incoming audio via UDP, pipe it into sox to convert it to a 16-bit signed integer at 22050 Hz
+# There's a lot of spam from sox regarding the rate/integer conversions, so send it to /dev/null
+#   Based on extensive testing, this seems to be errors that can be ignored, as all notifications have been received so far.
+# We're also not interested in the various extra output of multimon-ng
+nc -kulp $PORT  | sox -t raw -efloat -b32 -r 16000 - -esigned-integer -b16 -r 22050 -t raw - 2>/dev/null \
+|  multimon-ng -t raw -a EAS -f alpha - 2> /dev/null  \
+| python -u /eas-notifier/dsame3/pipe.py
