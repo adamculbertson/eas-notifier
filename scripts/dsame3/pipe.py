@@ -31,8 +31,16 @@ def parse_event(event: dict):
     if webhook_authorization is not None:
         headers['Authorization'] = webhook_authorization
 
-    r = requests.post(webhook_url, json=event, headers=headers)
-    r.raise_for_status()
+    try:
+        r = requests.post(webhook_url, json=event, headers=headers)
+    except Exception as e:
+        sys.stderr.write(f"Caught exception posting to webhook. {e}\n")
+        sys.stderr.flush()
+        return
+
+    if r.status_code != r.ok:
+        sys.stderr.write(f"Error posting to webhook. Received status code {r.status_code}\n")
+        sys.stderr.flush()
 
 
 if __name__ == "__main__":
