@@ -47,6 +47,7 @@ if __name__ == "__main__":
     sys.stdout.write("Ready to parse incoming alerts!\n")
     sys.stdout.flush()
     for line in sys.stdin:
+        # Skip the end message of an alert
         if "NNNN" in line:
             continue
 
@@ -69,8 +70,11 @@ if __name__ == "__main__":
                 try:
                     js = json.loads(p.stdout)
                 except json.JSONDecodeError as e:
+                    # dsame sometimes outputs an empty string
+                    # Output the line that causes the empty string for debugging
                     sys.stderr.write(f"Error decoding JSON from dsame: {e}\n")
                     sys.stderr.write(f"Output: {p.stdout}\n")
+                    sys.stderr.write(f"Line: {line}\n")
                     sys.stderr.flush()
                     continue
 
