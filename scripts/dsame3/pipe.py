@@ -40,6 +40,7 @@ def parse_event(event: dict):
 
     if r.status_code != r.ok:
         sys.stderr.write(f"Error posting to webhook. Received status code {r.status_code}\n")
+        sys.stderr.write(f"Headers: {json.dumps(headers)}\n")
         sys.stderr.flush()
 
 
@@ -66,13 +67,13 @@ if __name__ == "__main__":
                      ["--json", "-"]  # Have dsame output the JSON to stdout instead
 
             p = subprocess.run(params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if p.returncode == 0:
+            if p.returncode == 0 and p.stdout:
                 try:
                     js = json.loads(p.stdout)
-                except json.JSONDecodeError as e:
+                except json.JSONDecodeError:
                     # dsame sometimes outputs an empty string
                     # Output the line that causes the empty string for debugging
-                    sys.stderr.write(f"Error decoding JSON from dsame: {e}\n")
+                    sys.stderr.write(f"Error decoding JSON from dsame\n")
                     sys.stderr.write(f"Output: {p.stdout}\n")
                     sys.stderr.write(f"Line: {line}\n")
                     sys.stderr.flush()
@@ -80,5 +81,15 @@ if __name__ == "__main__":
 
                 sys.stdout.write(js['MESSAGE'] + "\n")
                 sys.stdout.flush()
+                js['line'] = line  # Add the raw data for the line to the payload
                 # Send the stdout of the process to the parse_event function in a new thread
                 threading.Thread(target=parse_event, args=(js,)).start()
+
+            elif p.returncode == 0 and not p.stdout:
+                sys.stderr.write(f"dsame blank output: {line}\n")
+                sys.stderr.flush()
+
+            else:
+                sys.stderr.write(f"Unexpected return value from dsame: {p.returncode}\n")
+                sys.stderr.write(f"Line: {line}\n")
+                sys.stderr.flush()
