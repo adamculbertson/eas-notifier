@@ -38,7 +38,7 @@ def parse_event(event: dict):
         sys.stderr.flush()
         return
 
-    if r.status_code != r.ok:
+    if not r.ok:
         sys.stderr.write(f"Error posting to webhook. Received status code {r.status_code}\n")
         sys.stderr.write(f"Headers: {json.dumps(headers)}\n")
         sys.stderr.flush()
