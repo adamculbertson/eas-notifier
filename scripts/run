@@ -8,11 +8,6 @@ if [ -z "$PORT" ]; then
 fi
 
 #Check for required environment variables
-if [ -z "$SAME" ]; then
-  echo "No SAME codes specified" >&2
-  exit 2
-fi
-
 if [ -z "$WEBHOOK_URL" ]; then
   echo "No webhook url specified" >&2
   exit 2

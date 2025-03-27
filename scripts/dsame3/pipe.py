@@ -6,14 +6,21 @@ import threading
 
 import requests
 
-same = os.environ['SAME']
 webhook_url = os.environ['WEBHOOK_URL']
 
-# Remove the quotes from the SAME codes
-# Convert the SAME codes into an array
-# This will be passed to dsame3
-same = same.replace("\"", "")
-same = same.split(" ")
+# SAME codes are optional, so check if they were provided
+try:
+    same = os.environ['SAME']
+    # Remove the quotes from the SAME codes
+    # Convert the SAME codes into an array
+    # This will be passed to dsame3
+    same = same.replace("\"", "")
+    same = same.split(" ")
+
+    if not same:
+        same = None
+except KeyError:
+    same = None
 
 # Check if the authorization token exists in the environment and contains a valid "truthful" value (not empty quotes)
 try:
@@ -61,10 +68,15 @@ if __name__ == "__main__":
             # However, given how much trouble it's been just getting some output and dealing with buffering
             # I am going to use subprocess.run for a while, but may end up in the future trying the function
 
+            params = ["python", "-u", "/eas-notifier/dsame3/dsame.py", "--msg", line ]
+
             # The SAME codes are passed using a single --same flag, but as multiple parameters
             # We append the list containing the SAME codes to the parameter list
-            params = ["python", "-u", "/eas-notifier/dsame3/dsame.py", "--msg", line, "--same"] + same + \
-                     ["--json", "-"]  # Have dsame output the JSON to stdout instead
+            # Determine if any SAME codes were provided
+            if same is not None:
+                params += ["--same"] + same
+
+            params += ["--json", "-"]  # Have dsame output the JSON to stdout instead
 
             p = subprocess.run(params, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if p.returncode == 0 and p.stdout:
@@ -86,6 +98,8 @@ if __name__ == "__main__":
                 threading.Thread(target=parse_event, args=(js,)).start()
 
             elif p.returncode == 0 and not p.stdout:
+                # Blank output can be caused by the use of the --same parameter
+                # When the alert does not match anything in the list of codes, then nothing is output
                 sys.stderr.write(f"dsame blank output: {line}\n")
                 sys.stderr.flush()
 
