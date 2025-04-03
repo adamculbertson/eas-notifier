@@ -14,10 +14,15 @@ if [ -z "$WEBHOOK_URL" ]; then
 fi
 
 #Allow the Python script to access the variables
-export SAME="$SAME"
-export WEBHOOK_URL="$WEBHOOK_URL"
-export WEBHOOK_AUTHORIZATION="$WEBHOOK_AUTHORIZATION"
+if [[  -v SAME ]]; then
+  export SAME="$SAME"
+fi
 
+export WEBHOOK_URL="$WEBHOOK_URL"
+
+if [[ ! -v WEBHOOK_AUTHORIZATION ]]; then
+  export WEBHOOK_AUTHORIZATION="$WEBHOOK_AUTHORIZATION"
+fi
 #Take the incoming audio via UDP, pipe it into sox to convert it to a 16-bit signed integer at 22050 Hz
 # There's a lot of spam from sox regarding the rate/integer conversions, so send it to /dev/null
 #   Based on extensive testing, this seems to be errors that can be ignored, as all notifications have been received so far.
