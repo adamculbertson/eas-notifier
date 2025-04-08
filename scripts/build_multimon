@@ -4,6 +4,6 @@
 git clone https://github.com/EliasOenal/multimon-ng
 mkdir multimon-ng/build
 cd multimon-ng/build
-cmake ..
+cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 make
 make install
