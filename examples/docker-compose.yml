@@ -3,6 +3,7 @@ services:
     container_name: eas-notifier
     build: ./eas-notifier
     environment:
+      LOG_LEVEL: "INFO" #Optional; Set the log level for debugging
       SAME: "011568 026863 041583 051764 010941" #Optional; list of SAME codes to monitor
       WEBHOOK_URL: "https://your-webhook-url/here" #Required; POST URL for webhook
       WEBHOOK_AUTHORIZATION: "Bearer your-token-here" #Optional; authorization token for webhook
